@@ -1,24 +1,48 @@
-create table us
+CREATE EXTENSION hstore;
+
+create table users
 (
     id            bigserial primary key,
-    userName      varchar(30) unique not null,
+    uuid          uuid,
+    userName      varchar(30) unique not null check ( length(userName) > 2 ),
     university_id int,
     karma         int DEFAULT 0,
-    clubs         int[],
-    clubs_status  char[]
+    clubs         hstore
 );
+
+create table auth
+(
+    id                 uuid not null primary key,
+    email              varchar,
+    raw_user_meta_data jsonb,
+    phone              varchar
+);
+
+insert into auth (id, email, raw_user_meta_data, phone)
+values ('78da1732-300b-4dc0-9380-d05516f8d550', 'fahimmanowarj5@gmail.com', '{
+  "iss": "https://www.googleapis.com/userinfo/v2/me",
+  "sub": "109365051886332781261",
+  "name": "PRO_GrAMmER PRO_GrAMmER",
+  "email": "fahimmanowarj5@gmail.com",
+  "picture": "https://lh3.googleusercontent.com/a-/AFdZucr_L5L-LZFBYUNm8w1IIJVATfv5NKWn6sdxS-L1=s96-c",
+  "full_name": "PRO_GrAMmER PRO_GrAMmER",
+  "avatar_url": "https://lh3.googleusercontent.com/a-/AFdZucr_L5L-LZFBYUNm8w1IIJVATfv5NKWn6sdxS-L1=s96-c",
+  "provider_id": "109365051886332781261",
+  "email_verified": true
+}', null);
+
 
 create table us_profile_view
 (
     id              bigint,
     gender          char DEFAULT 'u',
-    social_websites varchar(100)[],
+    social_websites hstore,
     birthday        date,
     pic             varchar(200),
     phone           varchar(15),
     email           varchar(64),
-    friends_id      bigint[],
-    foreign key (id) references us (id)
+    friends_id      hstore,
+    foreign key (id) references users (id)
 );
 
 create table us_metaData
@@ -31,8 +55,8 @@ create table us_metaData
     updated_at timestamptz,
     link       varchar(200),
     mac_addr   macaddr,
-    visited    timestamptz,
-    foreign key (id) references us (id)
+    visited    hstore,
+    foreign key (id) references users (id)
 );
 
 create table metadata
