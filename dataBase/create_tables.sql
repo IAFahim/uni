@@ -2,13 +2,18 @@ CREATE EXTENSION hstore;
 
 create table users
 (
-    id            bigserial primary key,
-    uuid          uuid,
-    userName      varchar(30) unique not null check ( length(userName) > 2 ),
-    university_id int,
-    karma         int DEFAULT 0,
-    clubs         hstore
+    id              bigserial primary key,
+    userName        varchar(30) unique not null check ( length(userName) > 2 and users.userName ~* '[a-z]'),
+    user_id         uuid,
+    email           varchar(128),
+    university_id   int,
+    karma           int DEFAULT 0,
+    social_websites hstore,
+    visit_history   hstore
 );
+
+insert into users(userName)values ('wht 2 wiie');
+insert into users(userName)values ('fahim2');
 
 create table auth
 (
